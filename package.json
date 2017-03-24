@@ -3,7 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@material/layout-grid": "^0.1.1",
+    "@material/toolbar": "^0.1.2",
+    "@material/typography": "^0.2.0",
     "google-map-react": "^0.23.0",
+    "immutable": "^3.8.1",
     "react": "^15.4.2",
     "react-dom": "^15.4.2"
   },
