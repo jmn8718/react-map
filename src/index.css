@@ -1,9 +1,17 @@
+/*https://github.com/material-components/material-components-web/blob/master/docs/theming.md*/
+:root {
+  --mdc-theme-primary: #FFF;
+  --mdc-theme-text-primary-on-primary: #484848;
+  /*--mdc-theme-accent: #FFB300;*/
+  /*--mdc-theme-background: #FAFAFA;*/
+}
+
 body {
   margin: 0;
   padding: 0;
   font-family: 'Roboto', sans-serif;
   position: relative;
-
+  /*background: #F5F8FA;*/
   --mdc-layout-grid-margin: 0px;
   --mdc-layout-grid-gutter: 0px;
 

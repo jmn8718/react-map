@@ -1,67 +1,73 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
 import '@material/toolbar/dist/mdc.toolbar.css';
 import '@material/layout-grid/dist/mdc.layout-grid.css';
-import GoogleMapReact from 'google-map-react';
+import Map from './components/Map';
+import NavigationBar from './components/NavigationBar';
 
-const MapBootstrapURLKeys = {
-  key: 'AIzaSyBB22U3ESfZDw5R-Qpy356RcObr2svIEgY',
-  language: 'en',
+const GEO_OPTIONS = {
+  enableHighAccuracy: true,
+  maximumAge: 30000,
+  timeout: 27000,
 }
-
-const MapOptions = {
-  defaultZoom: 11,
-  mapTypeControl: true,
-}
-
-const onBoundsChange = ({ center, zoom, bounds, marginBounds }) => {
-  console.log(center, zoom)
-}
-
-const onClick = ({x, y, lat, lng, event}) => {
-  console.log(x, y, lat, lng, event)
-}
-
-const Marker = ({ text }) => (
-  <div>
-    {text}
-  </div>
-);
 
 class App extends Component {
-  static defaultProps = {
-    center: {
-      lat: 50.81,
-      lng: 4.41,
-    },
-    zoom: 11,
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      currentPosition: undefined,
+    };
+  }
+
+  watchID: ?number = null;
+
+  componentDidMount() {
+    if ("geolocation" in navigator) {
+      /* geolocation is available */
+      console.log('ẃe have geo')
+      navigator.geolocation.getCurrentPosition(this.updatePositionSuccess, this.updatePositionError, GEO_OPTIONS);
+      this.watchID = navigator.geolocation.watchPosition(this.updatePositionSuccess, this.updatePositionError, GEO_OPTIONS);
+    } else {
+      /* geolocaiton IS NOT available */
+      console.log('ẃe dont have geo')
+    }
+  }
+
+  componentWillUnmount() {
+    navigator.geolocation.clearWatch(this.watchID);
+  }
+
+  updatePositionSuccess = (position) => {
+    console.log('new pos', position)
+    this.setState({
+      currentPosition: position,
+    })
+  }
+
+  updatePositionError = (error) => {
+    this.setState({ error });
+    console.log(error)
+  }
 
   render() {
     return (
-      <div style={{ height: '100vh' }}>
-        <header className="mdc-toolbar mdc-toolbar--fixed">
-          <section className="mdc-toolbar__section mdc-toolbar__section--align-start">
-            <span className="mdc-toolbar__title">Title</span>
-          </section>
-        </header>
+      <div className="mdc-typography" style={{ height: '100vh' }}>
+        <NavigationBar title="React Map" />
         <div className="mdc-layout-grid" style={{ height: 'calc(100% - 64px)', top: 64, position: 'relative' }}>
           <div className="mdc-layout-grid__cell mdc-layout-grid__cell--span-4 mdc-layout-grid__cell--span-12-tablet">
-
+            {this.state.currentPosition ?
+              <div>
+                LAT: {this.state.currentPosition.coords.latitude}<br />
+                LON: {this.state.currentPosition.coords.longitude}<br />
+                ACC: {this.state.currentPosition.coords.accuracy}<br />
+              </div> :
+              <p>No Position</p>
+            }
           </div>
           <div className="mdc-layout-grid__cell mdc-layout-grid__cell--span-8 mdc-layout-grid__cell--span-12-tablet">
-            <GoogleMapReact
-              defaultCenter={this.props.center}
-              defaultZoom={this.props.zoom}
-              options={MapOptions}
-              bootstrapURLKeys={MapBootstrapURLKeys}
-              onChange={onBoundsChange}
-              onClick={onClick}
-              resetBoundsOnResize
-              >
-              <Marker {...this.props.center} text="RTVE"/>
-            </GoogleMapReact>
+            <Map
+              currentPosition={this.state.currentPosition}
+            />
           </div>
         </div>
       </div>
