@@ -13,9 +13,7 @@ const onClick = ({x, y, lat, lng, event}) => {
 }
 
 const Marker = ({ text }) => (
-  <div>
-    {text}
-  </div>
+  <i className="material-icons" style={{ color: 'blue' }}>brightness_1</i>
 );
 
 const getCoordsFromPosition = (position) => ({
@@ -41,6 +39,7 @@ class App extends Component {
 
   render() {
     const myPosition = this.props.currentPosition ? getCoordsFromPosition(this.props.currentPosition) : undefined;
+    console.log(this.props)
     return (
       <GoogleMapReact
         defaultCenter={DEFAULT_CENTER}
